@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.violetqqy.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Using Terminalsudo1234567891011121314151617181920212223242526272829303132sudo - execute a command as another userusage: sudo -h | -K | -k | -Vusage: sudo -v [-AknS] [-g group] [-h host] [-p prompt] [-">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Using Terminal">
+<meta property="og:url" content="http://www.violetqqy.com/2015/12/24/using-terminal/index.html">
+<meta property="og:site_name" content="VioletQQY的任意门">
+<meta property="og:description" content="Using Terminalsudo1234567891011121314151617181920212223242526272829303132sudo - execute a command as another userusage: sudo -h | -K | -k | -Vusage: sudo -v [-AknS] [-g group] [-h host] [-p prompt] [-">
+<meta property="og:locale">
+<meta property="article:published_time" content="2015-12-23T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-10T08:06:44.890Z">
+<meta property="article:author" content="Violetta Qiao">
+<meta property="article:tag" content="terminal">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://www.violetqqy.com/2015/12/24/using-terminal/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>Using Terminal | VioletQQY的任意门</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">VioletQQY的任意门</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://www.violetqqy.com/2015/12/24/using-terminal/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Violetta Qiao">
+      <meta itemprop="description" content="至少到最后 我还有咸鱼 不腐烂的自尊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="VioletQQY的任意门">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Using Terminal
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2015-12-24 00:00:00" itemprop="dateCreated datePublished" datetime="2015-12-24T00:00:00+08:00">2015-12-24</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/configuration/" itemprop="url" rel="index"><span itemprop="name">configuration</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Using-Terminal"><a href="#Using-Terminal" class="headerlink" title="Using Terminal"></a>Using Terminal</h1><h2 id="sudo"><a href="#sudo" class="headerlink" title="sudo"></a>sudo</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">sudo - execute a <span class="built_in">command</span> as another user</span><br><span class="line"></span><br><span class="line">usage: sudo -h | -K | -k | -V</span><br><span class="line">usage: sudo -v [-AknS] [-g group] [-h host] [-p prompt] [-u user]</span><br><span class="line">usage: sudo -l [-AknS] [-g group] [-h host] [-p prompt] [-U user] [-u user] [<span class="built_in">command</span>]</span><br><span class="line">usage: sudo [-AbEHknPS] [-C num] [-g group] [-h host] [-p prompt] [-u user] [VAR=value] [-i|-s] [&lt;<span class="built_in">command</span>&gt;]</span><br><span class="line">usage: sudo -e [-AknS] [-C num] [-g group] [-h host] [-p prompt] [-u user] file ...</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  -A, --askpass               use a helper program <span class="keyword">for</span> password prompting</span><br><span class="line">  -b, --background            run <span class="built_in">command</span> <span class="keyword">in</span> the background</span><br><span class="line">  -C, --close-from=num        close all file descriptors &gt;= num</span><br><span class="line">  -E, --preserve-env          preserve user environment when running <span class="built_in">command</span></span><br><span class="line">  -e, --edit                  edit files instead of running a <span class="built_in">command</span></span><br><span class="line">  -g, --group=group           run <span class="built_in">command</span> as the specified group name or ID</span><br><span class="line">  -H, --set-home              <span class="built_in">set</span> HOME variable to target user<span class="string">&#x27;s home dir</span></span><br><span class="line"><span class="string">  -h, --help                  display help message and exit</span></span><br><span class="line"><span class="string">  -h, --host=host             run command on host (if supported by plugin)</span></span><br><span class="line"><span class="string">  -i, --login                 run login shell as the target user; a command may also be specified</span></span><br><span class="line"><span class="string">  -K, --remove-timestamp      remove timestamp file completely</span></span><br><span class="line"><span class="string">  -k, --reset-timestamp       invalidate timestamp file</span></span><br><span class="line"><span class="string">  -l, --list                  list user&#x27;</span>s privileges or check a specific <span class="built_in">command</span>; use twice <span class="keyword">for</span> longer format</span><br><span class="line">  -n, --non-interactive       non-interactive mode, no prompts are used</span><br><span class="line">  -P, --preserve-groups       preserve group vector instead of setting to target<span class="string">&#x27;s</span></span><br><span class="line"><span class="string">  -p, --prompt=prompt         use the specified password prompt</span></span><br><span class="line"><span class="string">  -S, --stdin                 read password from standard input</span></span><br><span class="line"><span class="string">  -s, --shell                 run shell as the target user; a command may also be specified</span></span><br><span class="line"><span class="string">  -U, --other-user=user       in list mode, display privileges for user</span></span><br><span class="line"><span class="string">  -u, --user=user             run command (or edit file) as specified user name or ID</span></span><br><span class="line"><span class="string">  -V, --version               display version information and exit</span></span><br><span class="line"><span class="string">  -v, --validate              update user&#x27;</span>s timestamp without running a <span class="built_in">command</span></span><br><span class="line">  --                          stop processing <span class="built_in">command</span> line arguments</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h2 id="man"><a href="#man" class="headerlink" title="man"></a>man</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">man, version 1.6c</span><br><span class="line"></span><br><span class="line">usage: man [-adfhktwW] [section] [-M path] [-P pager] [-S list]</span><br><span class="line">	[-m system] [-p string] name ...</span><br><span class="line"></span><br><span class="line">  a : find all matching entries</span><br><span class="line">  c : <span class="keyword">do</span> not use cat file</span><br><span class="line">  d : <span class="built_in">print</span> gobs of debugging information</span><br><span class="line">  D : as <span class="keyword">for</span> -d, but also display the pages</span><br><span class="line">  f : same as whatis(1)</span><br><span class="line">  h : <span class="built_in">print</span> this <span class="built_in">help</span> message</span><br><span class="line">  k : same as apropos(1)</span><br><span class="line">  K : search <span class="keyword">for</span> a string <span class="keyword">in</span> all pages</span><br><span class="line">  t : use troff to format pages <span class="keyword">for</span> printing</span><br><span class="line">  w : <span class="built_in">print</span> location of man page(s) that would be displayed</span><br><span class="line">      (<span class="keyword">if</span> no name given: <span class="built_in">print</span> directories that would be searched)</span><br><span class="line">  W : as <span class="keyword">for</span> -w, but display filenames only</span><br><span class="line"></span><br><span class="line">  C file   : use `file<span class="string">&#x27; as configuration file</span></span><br><span class="line"><span class="string">  M path   : set search path for manual pages to `path&#x27;</span></span><br><span class="line">  P pager  : use program `pager<span class="string">&#x27; to display pages</span></span><br><span class="line"><span class="string">  S list   : colon separated section list</span></span><br><span class="line"><span class="string">  m system : search for alternate system&#x27;</span>s man pages</span><br><span class="line">  p string : string tells <span class="built_in">which</span> preprocessors to run</span><br><span class="line">               e - [n]eqn(1)   p - pic(1)    t - tbl(1)</span><br><span class="line">               g - grap(1)     r - refer(1)  v - vgrind(1)</span><br></pre></td></tr></table></figure>
+
+<h2 id="cd"><a href="#cd" class="headerlink" title="cd"></a>cd</h2><p>进入指定目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> directory</span><br></pre></td></tr></table></figure>
+
+<h2 id="mkdir"><a href="#mkdir" class="headerlink" title="mkdir"></a>mkdir</h2><p>新建文件夹</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir [-pv] [-m mode] directory</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">The options are as follows:</span><br><span class="line"></span><br><span class="line">     -m mode</span><br><span class="line">             Set the file permission bits of the final created directory to the specified mode.  The mode argument can be <span class="keyword">in</span> any of the formats specified to the chmod(1) <span class="built_in">command</span>.  If a</span><br><span class="line">             symbolic mode is specified, the operation characters ``+<span class="string">&#x27;&#x27;</span> and ``-<span class="string">&#x27;&#x27;</span> are interpreted relative to an initial mode of ``a=rwx<span class="string">&#x27;&#x27;</span>.</span><br><span class="line"></span><br><span class="line">     -p      Create intermediate directories as required.  If this option is not specified, the full path prefix of each operand must already exist.  On the other hand, with this option</span><br><span class="line">             specified, no error will be reported <span class="keyword">if</span> a directory given as an operand already exists.  Intermediate directories are created with permission bits of rwxrwxrwx (0777) as mod-</span><br><span class="line">             ified by the current <span class="built_in">umask</span>, plus write and search permission <span class="keyword">for</span> the owner.</span><br><span class="line"></span><br><span class="line">     -v      Be verbose when creating directories, listing them as they are created.</span><br><span class="line"></span><br><span class="line">     The user must have write permission <span class="keyword">in</span> the parent directory.</span><br></pre></td></tr></table></figure>
+
+<h2 id="touch"><a href="#touch" class="headerlink" title="touch"></a>touch</h2><p>新建文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch [-A [-][[hh]mm]SS] [-acfhm] [-r file] [-t [[CC]YY]MMDDhhmm[.SS]] file</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">The following options are available:</span><br><span class="line"></span><br><span class="line">     -A      Adjust the access and modification time stamps <span class="keyword">for</span> the file by the specified value.  This flag is intended <span class="keyword">for</span> use <span class="keyword">in</span> modifying files with incorrectly <span class="built_in">set</span> time stamps.</span><br><span class="line"></span><br><span class="line">             The argument is of the form ``[-][[hh]mm]SS<span class="string">&#x27;&#x27;</span> <span class="built_in">where</span> each pair of letters represents the following:</span><br><span class="line"></span><br><span class="line">                   -       Make the adjustment negative: the new time stamp is <span class="built_in">set</span> to be before the old one.</span><br><span class="line">                   hh      The number of hours, from 00 to 99.</span><br><span class="line">                   mm      The number of minutes, from 00 to 59.</span><br><span class="line">                   SS      The number of seconds, from 00 to 59.</span><br><span class="line"></span><br><span class="line">             The -A flag implies the -c flag: <span class="keyword">if</span> any file specified does not exist, it will be silently ignored.</span><br><span class="line"></span><br><span class="line">     -a      Change the access time of the file.  The modification time of the file is not changed unless the -m flag is also specified.</span><br><span class="line"></span><br><span class="line">     -c      Do not create the file <span class="keyword">if</span> it does not exist.  The touch utility does not treat this as an error.  No error messages are displayed and the <span class="built_in">exit</span> value is not affected.</span><br><span class="line">                   hh      The number of hours, from 00 to 99.</span><br><span class="line">                   mm      The number of minutes, from 00 to 59.</span><br><span class="line">                   SS      The number of seconds, from 00 to 59.</span><br><span class="line"></span><br><span class="line">             The -A flag implies the -c flag: <span class="keyword">if</span> any file specified does not exist, it will be silently ignored.</span><br><span class="line"></span><br><span class="line">     -a      Change the access time of the file.  The modification time of the file is not changed unless the -m flag is also specified.</span><br><span class="line"></span><br><span class="line">     -c      Do not create the file <span class="keyword">if</span> it does not exist.  The touch utility does not treat this as an error.  No error messages are displayed and the <span class="built_in">exit</span> value is not affected.</span><br><span class="line"></span><br><span class="line">     -f      Attempt to force the update, even <span class="keyword">if</span> the file permissions <span class="keyword">do</span> not currently permit it.</span><br><span class="line"></span><br><span class="line">     -h      If the file is a symbolic link, change the <span class="built_in">times</span> of the link itself rather than the file that the link points to.  Note that -h implies -c and thus will not create any new</span><br><span class="line">             files.</span><br><span class="line"></span><br><span class="line">     -m      Change the modification time of the file.  The access time of the file is not changed unless the -a flag is also specified.</span><br><span class="line"></span><br><span class="line">     -r      Use the access and modifications <span class="built_in">times</span> from the specified file instead of the current time of day.</span><br><span class="line"></span><br><span class="line">     -t      Change the access and modification <span class="built_in">times</span> to the specified time instead of the current time of day.  The argument is of the form ``[[CC]YY]MMDDhhmm[.SS]<span class="string">&#x27;&#x27;</span> <span class="built_in">where</span> each pair of</span><br><span class="line">             letters represents the following:</span><br><span class="line"></span><br><span class="line">                   CC      The first two digits of the year (the century).</span><br><span class="line">                   YY      The second two digits of the year.  If ``YY<span class="string">&#x27;&#x27;</span> is specified, but ``CC<span class="string">&#x27;&#x27;</span> is not, a value <span class="keyword">for</span> ``YY<span class="string">&#x27;&#x27;</span> between 69 and 99 results <span class="keyword">in</span> a ``CC<span class="string">&#x27;&#x27;</span> value of 19.  Otherwise,</span><br><span class="line">                           a ``CC<span class="string">&#x27;&#x27;</span> value of 20 is used.</span><br><span class="line">                   MM      The month of the year, from 01 to 12.</span><br><span class="line">                   DD      the day of the month, from 01 to 31.</span><br><span class="line">                   hh      The hour of the day, from 00 to 23.</span><br><span class="line">                   mm      The minute of the hour, from 00 to 59.</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="rm"><a href="#rm" class="headerlink" title="rm"></a>rm</h2><p>删除文件/文件夹</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm [-dfiPRrvW] file</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">The options are as follows:</span><br><span class="line"></span><br><span class="line">     -d          Attempt to remove directories as well as other types of files.</span><br><span class="line"></span><br><span class="line">     -f          Attempt to remove the files without prompting <span class="keyword">for</span> confirmation, regardless of the file<span class="string">&#x27;s permissions.  If the file does not exist, do not display a diagnostic message or</span></span><br><span class="line"><span class="string">                 modify the exit status to reflect an error.  The -f option overrides any previous -i options.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -i          Request confirmation before attempting to remove each file, regardless of the file&#x27;</span>s permissions, or whether or not the standard input device is a terminal.  The -i</span><br><span class="line">                 option overrides any previous -f options.</span><br><span class="line"></span><br><span class="line">     -P          Overwrite regular files before deleting them.  Files are overwritten three <span class="built_in">times</span>, first with the byte pattern 0xff, <span class="keyword">then</span> 0x00, and <span class="keyword">then</span> 0xff again, before they are</span><br><span class="line">                 deleted.</span><br><span class="line"></span><br><span class="line">     -R          Attempt to remove the file hierarchy rooted <span class="keyword">in</span> each file argument.  The -R option implies the -d option.  If the -i option is specified, the user is prompted <span class="keyword">for</span> confir-</span><br><span class="line">                 mation before each directory<span class="string">&#x27;s contents are processed (as well as before the attempt is made to remove the directory).  If the user does not respond affirmatively, the</span></span><br><span class="line"><span class="string">                 file hierarchy rooted in that directory is skipped.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -r          Equivalent to -R.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -v          Be verbose when deleting files, showing them as they are removed.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -W          Attempt to undelete the named files.  Currently, this option can only be used to recover files covered by whiteouts.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     The rm utility removes symbolic links, not the files referenced by the links.</span></span><br><span class="line"><span class="string">     </span></span><br><span class="line"><span class="string">     It is an error to attempt to remove the files ``.&#x27;</span><span class="string">&#x27; or ``..&#x27;</span><span class="string">&#x27;.</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="cp"><a href="#cp" class="headerlink" title="cp"></a>cp</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cp [-R [-H | -L | -P]] [-<span class="keyword">fi</span> | -n] [-apvX] source_file target_file</span><br><span class="line"></span><br><span class="line">cp [-R [-H | -L | -P]] [-<span class="keyword">fi</span> | -n] [-apvX] source_file ... target_directory</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">The following options are available:</span><br><span class="line"></span><br><span class="line">     -a    Same as -pPR options. Preserves structure and attributes of files but not directory structure.</span><br><span class="line"></span><br><span class="line">     -f    If the destination file cannot be opened, remove it and create a new file, without prompting <span class="keyword">for</span> confirmation regardless of its permissions.  (The -f option overrides any pre-</span><br><span class="line">           vious -n option.)</span><br><span class="line"></span><br><span class="line">           The target file is not unlinked before the copy.  Thus, any existing access rights will be retained.</span><br><span class="line"></span><br><span class="line">     -H    If the -R option is specified, symbolic links on the <span class="built_in">command</span> line are followed.  (Symbolic links encountered <span class="keyword">in</span> the tree traversal are not followed.)</span><br><span class="line"></span><br><span class="line">     -i    Cause cp to write a prompt to the standard error output before copying a file that would overwrite an existing file.  If the response from the standard input begins with the</span><br><span class="line">           character `y<span class="string">&#x27; or `Y&#x27;</span>, the file copy is attempted.  (The -i option overrides any previous -n option.)</span><br><span class="line"></span><br><span class="line">     -L    If the -R option is specified, all symbolic links are followed.</span><br><span class="line"></span><br><span class="line">     -n    Do not overwrite an existing file.  (The -n option overrides any previous -f or -i options.)</span><br><span class="line"></span><br><span class="line">     -P    If the -R option is specified, no symbolic links are followed.  This is the default.</span><br><span class="line"></span><br><span class="line">     -p    Cause cp to preserve the following attributes of each <span class="built_in">source</span> file <span class="keyword">in</span> the copy: modification time, access time, file flags, file mode, user ID, and group ID, as allowed by per-</span><br><span class="line">           missions.  Access Control Lists (ACLs) and Extended Attributes (EAs), including resource forks, will also be preserved.</span><br><span class="line"></span><br><span class="line">           If the user ID and group ID cannot be preserved, no error message is displayed and the <span class="built_in">exit</span> value is not altered.</span><br><span class="line"></span><br><span class="line">           If the <span class="built_in">source</span> file has its set-user-ID bit on and the user ID cannot be preserved, the set-user-ID bit is not preserved <span class="keyword">in</span> the copy<span class="string">&#x27;s permissions.  If the source file has its</span></span><br><span class="line"><span class="string">           set-group-ID bit on and the group ID cannot be preserved, the set-group-ID bit is not preserved in the copy&#x27;</span>s permissions.  If the <span class="built_in">source</span> file has both its set-user-ID and <span class="built_in">set</span>-</span><br><span class="line">           group-ID bits on, and either the user ID or group ID cannot be preserved, neither the set-user-ID nor set-group-ID bits are preserved <span class="keyword">in</span> the copy<span class="string">&#x27;s permissions.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -R    If source_file designates a directory, cp copies the directory and the entire subtree connected at that point.  If the source_file ends in a /, the contents of the directory</span></span><br><span class="line"><span class="string">           are copied rather than the directory itself.  This option also causes symbolic links to be copied, rather than indirected through, and for cp to create special files rather</span></span><br><span class="line"><span class="string">           than copying them as normal files.  Created directories have the same mode as the corresponding source directory, unmodified by the process&#x27;</span> <span class="built_in">umask</span>.</span><br><span class="line"></span><br><span class="line">           In -R mode, cp will <span class="built_in">continue</span> copying even <span class="keyword">if</span> errors are detected.</span><br><span class="line"></span><br><span class="line">           Note that cp copies hard-linked files as separate files.  If you need to preserve hard links, consider using tar(1), cpio(1), or pax(1) instead.</span><br><span class="line"></span><br><span class="line">     -v    Cause cp to be verbose, showing files as they are copied.</span><br><span class="line"></span><br><span class="line">     -X    Do not copy Extended Attributes (EAs) or resource forks.</span><br><span class="line"></span><br><span class="line">     -c    copy files using clonefile(2)</span><br></pre></td></tr></table></figure>
+
+<h2 id="mv"><a href="#mv" class="headerlink" title="mv"></a>mv</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mv [-f | -i | -n] [-v] <span class="built_in">source</span> target</span><br><span class="line"></span><br><span class="line">mv [-f | -i | -n] [-v] <span class="built_in">source</span> ... directory</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">The following options are available:</span><br><span class="line"></span><br><span class="line">     -f      Do not prompt <span class="keyword">for</span> confirmation before overwriting the destination path.  (The -f option overrides any previous -i or -n options.)</span><br><span class="line"></span><br><span class="line">     -i      Cause mv to write a prompt to standard error before moving a file that would overwrite an existing file.  If the response from the standard input begins with the character</span><br><span class="line">             `y<span class="string">&#x27; or `Y&#x27;</span>, the move is attempted.  (The -i option overrides any previous -f or -n options.)</span><br><span class="line"></span><br><span class="line">     -n      Do not overwrite an existing file.  (The -n option overrides any previous -f or -i options.)</span><br><span class="line"></span><br><span class="line">     -v      Cause mv to be verbose, showing files after they are moved.</span><br></pre></td></tr></table></figure>
+
+<h2 id="ls"><a href="#ls" class="headerlink" title="ls"></a>ls</h2><p>to list all files</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls [-ABCFGHLOPRSTUW@abcdefghiklmnopqrstuwx1] [file ...]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line">The following options are available:</span><br><span class="line"></span><br><span class="line">     -@      Display extended attribute keys and sizes <span class="keyword">in</span> long (-l) output.</span><br><span class="line"></span><br><span class="line">     -1      (The numeric digit ``one<span class="string">&#x27;&#x27;</span>.)  Force output to be one entry per line.  This is the default when output is not to a terminal.</span><br><span class="line"></span><br><span class="line">     -A      List all entries except <span class="keyword">for</span> . and ...  Always <span class="built_in">set</span> <span class="keyword">for</span> the super-user.</span><br><span class="line"></span><br><span class="line">     -a      Include directory entries whose names begin with a dot (.).</span><br><span class="line"></span><br><span class="line">     -B      Force printing of non-printable characters (as defined by ctype(3) and current locale settings) <span class="keyword">in</span> file names as \xxx, <span class="built_in">where</span> xxx is the numeric value of the character <span class="keyword">in</span></span><br><span class="line">             octal.</span><br><span class="line"></span><br><span class="line">     -b      As -B, but use C escape codes whenever possible.</span><br><span class="line"></span><br><span class="line">     -C      Force multi-column output; this is the default when output is to a terminal.</span><br><span class="line"></span><br><span class="line">     -c      Use time when file status was last changed <span class="keyword">for</span> sorting (-t) or long printing (-l).</span><br><span class="line"></span><br><span class="line">     -d      Directories are listed as plain files (not searched recursively).</span><br><span class="line"></span><br><span class="line">     -e      Print the Access Control List (ACL) associated with the file, <span class="keyword">if</span> present, <span class="keyword">in</span> long (-l) output.</span><br><span class="line"></span><br><span class="line">     -F      Display a slash (`/<span class="string">&#x27;) immediately after each pathname that is a directory, an asterisk (`*&#x27;</span>) after each that is executable, an at sign (`@<span class="string">&#x27;) after each symbolic link, an</span></span><br><span class="line"><span class="string">             equals sign (`=&#x27;</span>) after each socket, a percent sign (`%<span class="string">&#x27;) after each whiteout, and a vertical bar (`|&#x27;</span>) after each that is a FIFO.</span><br><span class="line"></span><br><span class="line">     -f      Output is not sorted.  This option turns on the -a option.</span><br><span class="line"></span><br><span class="line">     -G      Enable colorized output.  This option is equivalent to defining CLICOLOR <span class="keyword">in</span> the environment.  (See below.)</span><br><span class="line"></span><br><span class="line">     -g      This option is only available <span class="keyword">for</span> compatibility with POSIX; it is used to display the group name <span class="keyword">in</span> the long (-l) format output (the owner name is suppressed).</span><br><span class="line"></span><br><span class="line">     -H      Symbolic links on the <span class="built_in">command</span> line are followed.  This option is assumed <span class="keyword">if</span> none of the -F, -d, or -l options are specified.</span><br><span class="line"></span><br><span class="line">     -h      When used with the -l option, use unit suffixes: Byte, Kilobyte, Megabyte, Gigabyte, Terabyte and Petabyte <span class="keyword">in</span> order to reduce the number of digits to three or less using base</span><br><span class="line">             2 <span class="keyword">for</span> sizes.</span><br><span class="line"></span><br><span class="line">     -i      For each file, <span class="built_in">print</span> the file<span class="string">&#x27;s file serial number (inode number).</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -k      If the -s option is specified, print the file size allocation in kilobytes, not blocks.  This option overrides the environment variable BLOCKSIZE.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -L      Follow all symbolic links to final target and list the file or directory the link references rather than the link itself.  This option cancels the -P option.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -l      (The lowercase letter ``ell&#x27;</span><span class="string">&#x27;.)  List in long format.  (See below.)  If the output is to a terminal, a total sum for all the file sizes is output on a line before the long</span></span><br><span class="line"><span class="string">             listing.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -m      Stream output format; list files across the page, separated by commas.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -n      Display user and group IDs numerically, rather than converting to a user or group name in a long (-l) output.  This option turns on the -l option.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -O      Include the file flags in a long (-l) output.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -o      List in long format, but omit the group id.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -P      If argument is a symbolic link, list the link itself rather than the object the link references.  This option cancels the -H and -L options.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -p      Write a slash (`/&#x27;</span>) after each filename <span class="keyword">if</span> that file is a directory.</span><br><span class="line"></span><br><span class="line">     -q      Force printing of non-graphic characters <span class="keyword">in</span> file names as the character `?<span class="string">&#x27;; this is the default when output is to a terminal.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -R      Recursively list subdirectories encountered.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -r      Reverse the order of the sort to get reverse lexicographical order or the oldest entries first (or largest files last, if combined with sort by size</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -S      Sort files by size</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -s      Display the number of file system blocks actually used by each file, in units of 512 bytes, where partial units are rounded up to the next integer value.  If the output is to</span></span><br><span class="line"><span class="string">             a terminal, a total sum for all the file sizes is output on a line before the listing.  The environment variable BLOCKSIZE overrides the unit size of 512 bytes.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -T      When used with the -l (lowercase letter ``ell&#x27;</span><span class="string">&#x27;) option, display complete time information for the file, including month, day, hour, minute, second, and year.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -t      Sort by time modified (most recently modified first) before sorting the operands by lexicographical order.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -u      Use time of last access, instead of last modification of the file for sorting (-t) or long printing (-l).</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -U      Use time of file creation, instead of last modification for sorting (-t) or long output (-l).</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -v      Force unedited printing of non-graphic characters; this is the default when output is not to a terminal.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -W      Display whiteouts when scanning directories.  (-S) flag).</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -w      Force raw printing of non-printable characters.  This is the default when output is not to a terminal.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -x      The same as -C, except that the multi-column output is produced with entries sorted across, rather than down, the columns.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     The -1, -C, -x, and -l options all override each other; the last one specified determines the format used.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     The -c and -u options override each other; the last one specified determines the file time used.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     The -B, -b, -w, and -q options all override each other; the last one specified determines the format used for non-printable characters.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     The -H, -L and -P options all override each other (either partially or fully); they are applied in the order specified.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     By default, ls lists one entry per line to standard output; the exceptions are to terminals or when the -C or -x options are specified.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     File information is displayed with one or more &lt;blank&gt;s separating the information associated with the -i, -s, and -l options.</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="pwd"><a href="#pwd" class="headerlink" title="pwd"></a>pwd</h2><p>to show the current path</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">pwd</span> [-L | -P]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">The options are as follows:</span><br><span class="line"></span><br><span class="line">     -L      Display the logical current working directory.</span><br><span class="line"></span><br><span class="line">     -P      Display the physical current working directory (all symbolic links resolved).</span><br><span class="line"></span><br><span class="line">     If no options are specified, the -L option is assumed.</span><br></pre></td></tr></table></figure>
+
+<h2 id="cat"><a href="#cat" class="headerlink" title="cat"></a>cat</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat [-benstuv] [file ...]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">The options are as follows:</span><br><span class="line"></span><br><span class="line">     -b      Number the non-blank output lines, starting at 1.</span><br><span class="line"></span><br><span class="line">     -e      Display non-printing characters (see the -v option), and display a dollar sign (`$<span class="string">&#x27;) at the end of each line.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -n      Number the output lines, starting at 1.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -s      Squeeze multiple adjacent empty lines, causing the output to be single spaced.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     -t      Display non-printing characters (see the -v option), and display tab characters as `^I&#x27;</span>.</span><br><span class="line"></span><br><span class="line">     -u      Disable output buffering.</span><br><span class="line"></span><br><span class="line">     -v      Display non-printing characters so they are visible.  Control characters <span class="built_in">print</span> as `^X<span class="string">&#x27; for control-X; the delete character (octal 0177) prints as `^?&#x27;</span>.  Non-ASCII characters</span><br><span class="line">             (with the high bit <span class="built_in">set</span>) are printed as `M-<span class="string">&#x27; (for meta) followed by the character for the low 7 bits.</span></span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/terminal/" rel="tag"># terminal</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2016/01/18/usage-of-emmet/" rel="next" title="Usage of Emmet">
+      Usage of Emmet <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Using-Terminal"><span class="nav-number">1.</span> <span class="nav-text">Using Terminal</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#sudo"><span class="nav-number">1.1.</span> <span class="nav-text">sudo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#man"><span class="nav-number">1.2.</span> <span class="nav-text">man</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cd"><span class="nav-number">1.3.</span> <span class="nav-text">cd</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mkdir"><span class="nav-number">1.4.</span> <span class="nav-text">mkdir</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#touch"><span class="nav-number">1.5.</span> <span class="nav-text">touch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rm"><span class="nav-number">1.6.</span> <span class="nav-text">rm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cp"><span class="nav-number">1.7.</span> <span class="nav-text">cp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mv"><span class="nav-number">1.8.</span> <span class="nav-text">mv</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ls"><span class="nav-number">1.9.</span> <span class="nav-text">ls</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pwd"><span class="nav-number">1.10.</span> <span class="nav-text">pwd</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cat"><span class="nav-number">1.11.</span> <span class="nav-text">cat</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Violetta Qiao"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Violetta Qiao</p>
+  <div class="site-description" itemprop="description">至少到最后 我还有咸鱼 不腐烂的自尊</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/violetqqy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;violetqqy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:forviolet771@gmail.com" title="E-Mail → mailto:forviolet771@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">沪ICP备18000466号 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">VioletQQY</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

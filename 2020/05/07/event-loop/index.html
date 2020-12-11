@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.violetqqy.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="浏览器的 Event Loop 机制浏览器的多线程浏览器是事件驱动的，浏览器中很多行为是异步的，会创建事件并放入执行队列中。  浏览器的渲染进程： GUI 线程 JS 引擎线程 定时器触发线程 事件触发线程 异步HTTP请求线程    JavaScript 是单线程的JavaScript 是单线程的，也就意味着它只有一个主线程，一次只能执行一段代码。  JavaScript 的运行机制  所有同步">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浏览器的 Event Loop 机制">
+<meta property="og:url" content="http://www.violetqqy.com/2020/05/07/event-loop/index.html">
+<meta property="og:site_name" content="VioletQQY的任意门">
+<meta property="og:description" content="浏览器的 Event Loop 机制浏览器的多线程浏览器是事件驱动的，浏览器中很多行为是异步的，会创建事件并放入执行队列中。  浏览器的渲染进程： GUI 线程 JS 引擎线程 定时器触发线程 事件触发线程 异步HTTP请求线程    JavaScript 是单线程的JavaScript 是单线程的，也就意味着它只有一个主线程，一次只能执行一段代码。  JavaScript 的运行机制  所有同步">
+<meta property="og:locale">
+<meta property="article:published_time" content="2020-05-06T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-11T02:47:45.438Z">
+<meta property="article:author" content="Violetta Qiao">
+<meta property="article:tag" content="javascript">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://www.violetqqy.com/2020/05/07/event-loop/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>浏览器的 Event Loop 机制 | VioletQQY的任意门</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">VioletQQY的任意门</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://www.violetqqy.com/2020/05/07/event-loop/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Violetta Qiao">
+      <meta itemprop="description" content="至少到最后 我还有咸鱼 不腐烂的自尊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="VioletQQY的任意门">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          浏览器的 Event Loop 机制
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-05-07 00:00:00" itemprop="dateCreated datePublished" datetime="2020-05-07T00:00:00+08:00">2020-05-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript/" itemprop="url" rel="index"><span itemprop="name">javascript</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="浏览器的-Event-Loop-机制"><a href="#浏览器的-Event-Loop-机制" class="headerlink" title="浏览器的 Event Loop 机制"></a>浏览器的 Event Loop 机制</h1><h2 id="浏览器的多线程"><a href="#浏览器的多线程" class="headerlink" title="浏览器的多线程"></a>浏览器的多线程</h2><p>浏览器是事件驱动的，浏览器中很多行为是异步的，会创建事件并放入执行队列中。</p>
+<ul>
+<li><strong>浏览器的渲染进程：</strong><ol>
+<li>GUI 线程</li>
+<li>JS 引擎线程</li>
+<li>定时器触发线程</li>
+<li>事件触发线程</li>
+<li>异步HTTP请求线程</li>
+</ol>
+</li>
+</ul>
+<h2 id="JavaScript-是单线程的"><a href="#JavaScript-是单线程的" class="headerlink" title="JavaScript 是单线程的"></a>JavaScript 是单线程的</h2><p>JavaScript 是单线程的，也就意味着它只有一个主线程，一次只能执行一段代码。</p>
+<ul>
+<li><p><strong>JavaScript 的运行机制</strong></p>
+<ol>
+<li>所有同步任务都在主线程上执行，形成一个执行栈。</li>
+<li>主线程之外，还存在”任务队列“。只要异步任务有了运行结果，就在”任务队列“之中放置一个事件。</li>
+<li>一旦”执行栈“中的所有同步任务执行完毕，系统就会读取”任务队列”，看看里面有哪些事件。那些对应的异步任务，于是结束等待状态，进入执行栈，开始执行。</li>
+<li>主线程不断重复上面的第三步。</li>
+</ol>
+</li>
+<li><p><strong>JavaScript 中有两种异步任务：</strong></p>
+<ol>
+<li>宏任务：script, setTimeout/setInterval, setImmediate, I/O, UI rendering</li>
+<li>微任务：Promises, Object.observe, MutationObserver, postMessage</li>
+</ol>
+</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="什么是Event-Loop？"><a href="#什么是Event-Loop？" class="headerlink" title="什么是Event Loop？"></a>什么是Event Loop？</h2><p>主线程从”任务队列“中读取执行事件，这个过程是循环不断的，这个机制被称为事件循环（Event Loop）。主线程会不断从任务队列中按顺序取任务执行，每执行完一个任务都会检查 microtask 队列是否为空（执行完一个任务的具体标志是函数执行栈为空），如果不为空则会一次性执行完所有 microtask 。然后再进入下一个循环去任务队列中取下一个任务执行。</p>
+<ul>
+<li>具体过程：<ol>
+<li>先执行全局 script 任务，执行完（主线程执行栈空）</li>
+<li>检查微任务队列里的所有任务，依次执行，全部执行完毕</li>
+<li>检查宏任务，读取第一个宏任务执行（执行宏任务的时候可能产生了新的微任务）</li>
+<li>重复步骤2、3，直到所有任务都执行完毕，执行栈为空。</li>
+</ol>
+</li>
+</ul>
+<h2 id="实例解析"><a href="#实例解析" class="headerlink" title="实例解析"></a>实例解析</h2><p>以练习题1为例解析 Event Loop 的执行流程：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;1&#x27;</span>);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="keyword">await</span> async2());</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;2&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">async2</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;3&#x27;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">setTimeout</span>(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;4&#x27;</span>);</span><br><span class="line">  <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> (<span class="params">resolve</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;5&#x27;</span>);</span><br><span class="line">    resolve();</span><br><span class="line">  &#125;).then(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;6&#x27;</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;);</span><br><span class="line">async1();</span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> (<span class="params">resolve</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;7&#x27;</span>);</span><br><span class="line">  resolve();</span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;8&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;9&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>循环一：</p>
+<ul>
+<li>【task队列：script ；microtask 队列：】</li>
+</ul>
+<ol>
+<li>从 task 队列中取出 script 任务，推入栈中执行</li>
+<li>setTimeout 列为 task</li>
+<li>执行 async1 函数</li>
+<li>打印1</li>
+<li>执行 async2 函数的 executor 代码</li>
+<li>打印3</li>
+<li>async2 回调列为 microtask</li>
+<li>执行 Promise 的 executor 代码</li>
+<li> 打印7</li>
+<li>Promise 回调列为 microtask</li>
+<li>打印9</li>
+</ol>
+<ul>
+<li>【task队列：setTimeout ；microtask 队列：async2 回调，Promise 回调】</li>
+</ul>
+<ol start="12">
+<li>script 任务执行完毕，执行 microtask checkpoint</li>
+<li>取出 async2 回调执行</li>
+<li><pre><code>打印0</code></pre>
+</li>
+<li>打印2</li>
+<li>取出 Promise 回调执行</li>
+<li>打印8</li>
+</ol>
+</li>
+<li><p>循环二：</p>
+<ul>
+<li>【task队列：setTimeout ；microtask 队列：】</li>
+</ul>
+<ol start="18">
+<li>微任务执行完毕，从宏任务队列中取出 setTimeout，推入栈中执行</li>
+<li>打印4</li>
+<li>执行 Promise 的 executor 代码</li>
+<li>打印5</li>
+<li>Promise 返回进入微任务队列</li>
+</ol>
+<ul>
+<li>【task队列：；microtask 队列：Promise 回调】</li>
+</ul>
+<ol start="24">
+<li>setTimeout 任务执行完毕，执行 microtask checkpoint</li>
+<li>取出 Promise 回调执行</li>
+<li>打印6</li>
+</ol>
+<ul>
+<li>【task队列：；microtask 队列：】</li>
+</ul>
+</li>
+</ul>
+<p>#开发笔记/JavaScript进阶/异步编程</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/javascript/" rel="tag"># javascript</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/16/memory-management/" rel="prev" title="内存管理">
+      <i class="fa fa-chevron-left"></i> 内存管理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/08/05/virtual-dom/" rel="next" title="虚拟DOM">
+      虚拟DOM <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84-Event-Loop-%E6%9C%BA%E5%88%B6"><span class="nav-number">1.</span> <span class="nav-text">浏览器的 Event Loop 机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E5%A4%9A%E7%BA%BF%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">浏览器的多线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JavaScript-%E6%98%AF%E5%8D%95%E7%BA%BF%E7%A8%8B%E7%9A%84"><span class="nav-number">1.2.</span> <span class="nav-text">JavaScript 是单线程的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFEvent-Loop%EF%BC%9F"><span class="nav-number">1.3.</span> <span class="nav-text">什么是Event Loop？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B%E8%A7%A3%E6%9E%90"><span class="nav-number">1.4.</span> <span class="nav-text">实例解析</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Violetta Qiao"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Violetta Qiao</p>
+  <div class="site-description" itemprop="description">至少到最后 我还有咸鱼 不腐烂的自尊</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/violetqqy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;violetqqy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:forviolet771@gmail.com" title="E-Mail → mailto:forviolet771@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">沪ICP备18000466号 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">VioletQQY</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

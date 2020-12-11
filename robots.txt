@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Allow: /archives/
+Allow: /categories/
+Allow: /tags/
+Disallow: /lib/
+Disallow: /js/
+Disallow: /css/
+Disallow: /fonts/
+Disallow: /fancybox/
+Disallow: /logreport/
+Sitemap: http://www.violetqqy.com/sitemap.xml
+Sitemap: http://www.violetqqy.com/baidusitemap.xml

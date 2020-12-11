@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.violetqqy.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="内存管理前端为什么要关注内存 防止页面占用内存过大，引起客户端卡顿，甚至无响应（用户体验）； Node.js 使用 V8 引擎，内存对于后端服务的性能至关重要，因为后端服务的持久性，后端更容易造成内存溢出（性能）。  JS数据类型与JS内存机制数据类型 原始数据类型：字符串（String）、数字（Number）、布尔（Boolean）、空对象（Null）、未定义（Undefined）、Symbol">
+<meta property="og:type" content="article">
+<meta property="og:title" content="内存管理">
+<meta property="og:url" content="http://www.violetqqy.com/2020/03/16/memory-management/index.html">
+<meta property="og:site_name" content="VioletQQY的任意门">
+<meta property="og:description" content="内存管理前端为什么要关注内存 防止页面占用内存过大，引起客户端卡顿，甚至无响应（用户体验）； Node.js 使用 V8 引擎，内存对于后端服务的性能至关重要，因为后端服务的持久性，后端更容易造成内存溢出（性能）。  JS数据类型与JS内存机制数据类型 原始数据类型：字符串（String）、数字（Number）、布尔（Boolean）、空对象（Null）、未定义（Undefined）、Symbol">
+<meta property="og:locale">
+<meta property="og:image" content="http://www.violetqqy.com/images/memory-management/49C12995-6CA8-42CD-92E4-C1089A8A414B.png">
+<meta property="og:image" content="http://www.violetqqy.com/images/memory-management/B43B863C-0893-4921-80B9-1B365C4848DC.png">
+<meta property="og:image" content="http://www.violetqqy.com/images/memory-management/46B99815-D7BA-403A-8649-6F9662AB2E0A.png">
+<meta property="og:image" content="http://www.violetqqy.com/images/memory-management/894B9EF6-5A51-4EB6-AAF4-25102054676B.png">
+<meta property="og:image" content="http://www.violetqqy.com/images/memory-management/863A3478-0336-4DA1-8108-1E9FDE4B3D69.png">
+<meta property="og:image" content="http://www.violetqqy.com/images/memory-management/55C1B098-9156-4141-ACDE-5291C4BA4E4A.png">
+<meta property="og:image" content="http://www.violetqqy.com/images/memory-management/D42CBE85-34B8-4465-B1FB-95B221D18998.png">
+<meta property="og:image" content="http://www.violetqqy.com/images/memory-management/285AED76-EAA1-41F1-942A-A0C54CD49F8F.png">
+<meta property="og:image" content="http://www.violetqqy.com/images/memory-management/59E40B3E-9838-4850-AFDF-589708A289C2.png">
+<meta property="og:image" content="http://www.violetqqy.com/images/memory-management/79F14E5E-0FEE-4396-B940-B5E9997955E1.png">
+<meta property="og:image" content="http://www.violetqqy.com/images/memory-management/991A4109-46A7-4EFF-BBDE-A79D7E66CB10.png">
+<meta property="og:image" content="http://www.violetqqy.com/images/memory-management/ED9DD972-148F-403A-85BD-F5FD99BC080F.png">
+<meta property="og:image" content="http://www.violetqqy.com/images/memory-management/78A1ECC6-F4AB-4822-BD33-A8A8AFBDE221.png">
+<meta property="og:image" content="http://www.violetqqy.com/images/memory-management/DC5928D9-DCD5-4516-8752-526B98642D15.png">
+<meta property="og:image" content="http://www.violetqqy.com/images/memory-management/4645D9D0-70E0-4B7C-B304-FAFA86A89C10.png">
+<meta property="og:image" content="http://www.violetqqy.com/images/memory-management/15B28EC0-4F52-4C27-9418-69B632E026D2.png">
+<meta property="og:image" content="http://www.violetqqy.com/images/memory-management/F6B90292-D07A-4331-910A-2803C6179B53.png">
+<meta property="og:image" content="http://www.violetqqy.com/images/memory-management/8A67607E-ED33-40E0-8D25-09F301872390.png">
+<meta property="og:image" content="http://www.violetqqy.com/images/memory-management/A7C34E77-593F-40FA-A708-22A0631E85B2.png">
+<meta property="og:image" content="http://www.violetqqy.com/images/memory-management/4274F712-7332-4822-A1EC-792C66DF5678.png">
+<meta property="article:published_time" content="2020-03-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-11T02:10:36.140Z">
+<meta property="article:author" content="Violetta Qiao">
+<meta property="article:tag" content="javascript">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.violetqqy.com/images/memory-management/49C12995-6CA8-42CD-92E4-C1089A8A414B.png">
+
+<link rel="canonical" href="http://www.violetqqy.com/2020/03/16/memory-management/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>内存管理 | VioletQQY的任意门</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">VioletQQY的任意门</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://www.violetqqy.com/2020/03/16/memory-management/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Violetta Qiao">
+      <meta itemprop="description" content="至少到最后 我还有咸鱼 不腐烂的自尊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="VioletQQY的任意门">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          内存管理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-03-16 00:00:00" itemprop="dateCreated datePublished" datetime="2020-03-16T00:00:00+08:00">2020-03-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript/" itemprop="url" rel="index"><span itemprop="name">javascript</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h1><h2 id="前端为什么要关注内存"><a href="#前端为什么要关注内存" class="headerlink" title="前端为什么要关注内存"></a>前端为什么要关注内存</h2><ul>
+<li>防止页面占用内存过大，引起客户端卡顿，甚至无响应（用户体验）；</li>
+<li>Node.js 使用 V8 引擎，内存对于后端服务的性能至关重要，因为后端服务的持久性，后端更容易造成内存溢出（性能）。</li>
+</ul>
+<h2 id="JS数据类型与JS内存机制"><a href="#JS数据类型与JS内存机制" class="headerlink" title="JS数据类型与JS内存机制"></a>JS数据类型与JS内存机制</h2><h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><ul>
+<li><strong>原始数据类型</strong>：字符串（String）、数字（Number）、布尔（Boolean）、空对象（Null）、未定义（Undefined）、Symbol（_NEW_）</li>
+<li><strong>引用数据类型</strong>：Object</li>
+<li><strong>内存空间</strong>：栈内存（stack）、堆内存（heap）</li>
+</ul>
+<a id="more"></a>
+
+<h3 id="栈内存（stack）"><a href="#栈内存（stack）" class="headerlink" title="栈内存（stack）"></a>栈内存（stack）</h3><p><img src="/images/memory-management/49C12995-6CA8-42CD-92E4-C1089A8A414B.png"></p>
+<ul>
+<li>入栈：从栈顶 -&gt; 栈底，新入栈数据为新的栈顶数据</li>
+<li>定义变量过程：<ol>
+<li>将值存入内存空间</li>
+<li>在当前作用域声明一个变量（此时变量的值是undefined）</li>
+<li>对变量进行赋值</li>
+</ol>
+</li>
+</ul>
+<p><img src="/images/memory-management/B43B863C-0893-4921-80B9-1B365C4848DC.png"></p>
+<ul>
+<li>出栈：从栈顶 -&gt; 栈底，从栈顶开始删除数据，最后删除最先入栈的栈底数据</li>
+</ul>
+<h3 id="堆内存（heap）"><a href="#堆内存（heap）" class="headerlink" title="堆内存（heap）"></a>堆内存（heap）</h3><ul>
+<li><strong>原始类型的值大小是固定的</strong>，由系统自动分配存储空间。</li>
+<li><strong>引用数据类型的值的大小是不固定的</strong>，相对于原始数据类型在栈内存中存储，引用数据类型在堆内存中进行存储。</li>
+<li>JS是不允许直接访问堆内存的，因此也无法直接操作对象的堆内存空间。操作对象时，实际上是在操作对象的引用而不是实际的对象，因此引用类型的值都是按引用（保存在栈内存中的内存地址，该地址与堆内存的实际值相关联）访问的。所以引用类型的值，是保存在堆内存中的对象。</li>
+</ul>
+<p><img src="/images/memory-management/46B99815-D7BA-403A-8649-6F9662AB2E0A.png"></p>
+<ul>
+<li><p><strong>定义对象</strong><br><img src="/images/memory-management/894B9EF6-5A51-4EB6-AAF4-25102054676B.png"></p>
+</li>
+<li><p><strong>定义函数</strong><br><img src="/images/memory-management/863A3478-0336-4DA1-8108-1E9FDE4B3D69.png"></p>
+</li>
+</ul>
+<h2 id="垃圾回收GC（Garbage-Collection）"><a href="#垃圾回收GC（Garbage-Collection）" class="headerlink" title="垃圾回收GC（Garbage Collection）"></a>垃圾回收GC（Garbage Collection）</h2><h3 id="内存的生命周期"><a href="#内存的生命周期" class="headerlink" title="内存的生命周期"></a>内存的生命周期</h3><p>不管什么程序语言，内存生命周期基本是一致的：   </p>
+<ol>
+<li>分配你所需要的内存</li>
+<li>使用分配到的内存（读、写）</li>
+<li>不需要时将其释放\归还</li>
+</ol>
+<p>像C语言这样的底层语言一般都有底层的内存管理接口，比如 malloc()和free()。相反，JavaScript是在创建变量（对象，字符串等）时自动进行了分配内存，并且在不使用它们时“自动”释放。 释放的过程称为垃圾回收。这个“自动”是混乱的根源，并让JavaScript（和其他高级语言）开发者错误的感觉他们可以不关心内存管理。 </p>
+<h3 id="JavaScript的垃圾回收机制"><a href="#JavaScript的垃圾回收机制" class="headerlink" title="JavaScript的垃圾回收机制"></a>JavaScript的垃圾回收机制</h3><p>找出那些不再继续使用的变量，然后释放其所占的内存，垃圾回收器会按照固定的时间间隔周期性地执行这一操作。</p>
+<h3 id="JavaScript-使用垃圾回收机制来自动管理内存，垃圾回收是一把双刃剑："><a href="#JavaScript-使用垃圾回收机制来自动管理内存，垃圾回收是一把双刃剑：" class="headerlink" title="JavaScript 使用垃圾回收机制来自动管理内存，垃圾回收是一把双刃剑："></a>JavaScript 使用垃圾回收机制来自动管理内存，垃圾回收是一把双刃剑：</h3><ul>
+<li>::优势::：可以大幅简化程序的内存管理代码，降低程序员的负担，减少因长时间运转而带来的内存泄露问题。</li>
+<li>::不足::：意味着程序员将无法掌控内存。Javascript 没有暴露任何关于内存的 API。我们无法强迫其进行垃圾回收，更无法干预内存管理。</li>
+</ul>
+<h3 id="垃圾回收策略——引用计数"><a href="#垃圾回收策略——引用计数" class="headerlink" title="垃圾回收策略——引用计数"></a>垃圾回收策略——引用计数</h3><ul>
+<li><p>引用<br>垃圾回收算法主要依赖于引用的概念。在内存管理的环境中，一个对象如果有访问另一个对象的权限（隐式或者显式），叫做一个对象引用另一个对象。例如，一个Javascript对象具有对它原型的引用（隐式引用）和对它属性的引用（显式引用）。<br>在这里，“对象”的概念不仅特指 JavaScript 对象，还包括函数作用域（或者全局词法作用域）。</p>
+</li>
+<li><p>引用计数（reference counting）<br>这是最初级的垃圾收集算法。此算法把“对象是否不再需要”简化定义为“对象有没有其他对象引用到它”。如果没有引用指向该对象（零引用），对象将被垃圾回收机制回收。<br>即跟踪记录每个值被引用的次数，如果一个值的引用次数是0，就表示这个值不再用到了，因此可以将这块内存释放。</p>
+</li>
+<li><p>原理<br>每次引用加一，被释放时减一，当这个值的引用次数变成0时，就可以将其内存空间回收。</p>
+</li>
+</ul>
+<ol>
+<li>声明了一个变量并将一个引用类型的值赋值给这个变量，这个引用类型的值的引用次数是1；</li>
+<li>同一个值又被赋值给另一个变量，这个引用类型值的引用次数加1；</li>
+<li>当包含这个引用类型值的变量又被赋值成了另一个值了，那么这个引用类型值的引用次数减1；</li>
+<li>当引用次数变成0时，说明没办法访问这个值了；</li>
+<li>当垃圾收集器下一次运行时，它就会释放引用次数是0的值所占的内存。</li>
+</ol>
+<ul>
+<li><p>示例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">var o &#x3D; &#123; </span><br><span class="line">  a: &#123;</span><br><span class="line">    b:2</span><br><span class="line">  &#125;</span><br><span class="line">&#125;; </span><br><span class="line">&#x2F;&#x2F; 两个对象被创建，一个作为另一个的属性被引用，另一个被分配给变量o</span><br><span class="line">&#x2F;&#x2F; 很显然，没有一个可以被垃圾收集</span><br><span class="line"></span><br><span class="line">var o2 &#x3D; o; &#x2F;&#x2F; o2变量是第二个对“这个对象”的引用</span><br><span class="line"></span><br><span class="line">o &#x3D; 1;      &#x2F;&#x2F; 现在，“这个对象”只有一个o2变量的引用了，“这个对象”的原始引用o已经没有</span><br><span class="line"></span><br><span class="line">var oa &#x3D; o2.a; &#x2F;&#x2F; 引用“这个对象”的a属性</span><br><span class="line">               &#x2F;&#x2F; 现在，“这个对象”有两个引用了，一个是o2，一个是oa</span><br><span class="line"></span><br><span class="line">o2 &#x3D; &quot;yo&quot;; &#x2F;&#x2F; 虽然最初的对象现在已经是零引用了，可以被垃圾回收了</span><br><span class="line">           &#x2F;&#x2F; 但是它的属性a的对象还在被oa引用，所以还不能回收</span><br><span class="line"></span><br><span class="line">oa &#x3D; null; &#x2F;&#x2F; a属性的那个对象现在也是零引用了</span><br><span class="line">           &#x2F;&#x2F; 它可以被垃圾回收了</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>限制：循环引用</strong><br>该算法有个限制：无法处理循环引用的事例。在下面的例子中，两个对象被创建，并互相引用，形成了一个循环。它们被调用之后会离开函数作用域，所以它们已经没有用了，可以被回收了。然而，引用计数算法考虑到它们互相都有至少一次引用，所以它们不会被回收。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 循环引用 (IE8及以前的时代)</span><br><span class="line">function f()&#123;</span><br><span class="line">  var o &#x3D; &#123;&#125;;</span><br><span class="line">  var o2 &#x3D; &#123;&#125;;</span><br><span class="line">  o.a &#x3D; o2; &#x2F;&#x2F; o 引用 o2</span><br><span class="line">  o2.a &#x3D; o; &#x2F;&#x2F; o2 引用 o</span><br><span class="line"></span><br><span class="line">  return &quot;azerty&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">f();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>实际例子<br>IE 6, 7 使用引用计数方式对 DOM 对象进行垃圾回收。该方式常常造成对象被循环引用时内存发生泄漏：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var div;</span><br><span class="line">window.onload &#x3D; function()&#123;</span><br><span class="line">  div &#x3D; document.getElementById(&quot;myDivElement&quot;);</span><br><span class="line">  div.circularReference &#x3D; div;</span><br><span class="line">  div.lotsOfData &#x3D; new Array(10000).join(&quot;*&quot;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>在上面的例子里，<code>myDivElement</code> 这个 DOM 元素里的 <code>circularReference</code> 属性引用了 <code>myDivElement</code>，造成了循环引用。如果该属性没有显示移除或者设为 null，引用计数式垃圾收集器将总是且至少有一个引用，并将一直保持在内存里的 DOM 元素，即使其从DOM 树中删去了。如果这个 DOM 元素拥有大量的数据 (如上的 <code>lotsOfData</code> 属性)，而这个数据占用的内存将永远不会被释放。</p>
+<h3 id="垃圾回收策略——标记清除"><a href="#垃圾回收策略——标记清除" class="headerlink" title="垃圾回收策略——标记清除"></a>垃圾回收策略——标记清除</h3><ul>
+<li><p>标记清除<br>这个算法把“对象是否不再需要”简化定义为“对象是否可以获得”。<br>这个算法假定设置一个叫做根（root）的对象（在Javascript里，根是全局对象）。垃圾回收器将定期从根开始，找所有从根开始引用的对象，然后找这些对象引用的对象……从根开始，垃圾回收器将找到所有可以获得的对象和收集所有不能获得的对象。<br>即标记清除指的是当变量进入环境时，这个变量标记为“进入环境”；而当变量离开环境时，则将其标记为“离开环境”，最后，垃圾收集器完成内存清除工作，销毁那些带标记的值并回收它们所占用的内存空间。</p>
+</li>
+<li><p>执行环境<br>执行环境定义了变量或函数有权访问的其他数据，决定了它们各自的行为。每个执行环境都有一个与之关联的变量对象（variable object），环境中定义的所有变量和函数都保存在这个对象中。</p>
+<ul>
+<li><strong>全局执行环境</strong>：<ul>
+<li>最外围的一个执行环境</li>
+<li>根据宿主环境不同表示执行环境的对象也不一样。在浏览器中，全局执行环境被认为是window对象</li>
+<li>全局变量和函数都是作为window对象的属性和方法创建的</li>
+<li>某个执行环境中的所有代码执行完毕后，该环境被销毁，保存在其中的所有变量和函数定义也随之销毁</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>环境栈（局部）<br>每个函数都有自己的执行环境。当执行流进入一个函数时，函数的环境就会被推入一个环境栈中。而在函数执行之后，栈将其环境弹出，把控制权返回给之前的执行环境。ECMAScript程序中的执行流正式由这个方便的机制控制着。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function foo() &#123;</span><br><span class="line">	var a &#x3D; 10; &#x2F;&#x2F; 被标记进入环境</span><br><span class="line">	var b &#x3D; ‘hello’ &#x2F;&#x2F; 被标记进入环境</span><br><span class="line">&#125;</span><br><span class="line">foo(); &#x2F;&#x2F; 执行完毕，a和b被标记离开环境，内存被回收</span><br></pre></td></tr></table></figure>
+
+<h2 id="V8引擎的内存管理机制"><a href="#V8引擎的内存管理机制" class="headerlink" title="V8引擎的内存管理机制"></a>V8引擎的内存管理机制</h2><h3 id="内存大小"><a href="#内存大小" class="headerlink" title="内存大小"></a>内存大小</h3><ul>
+<li>和操作系统有关：64位为1.4G；32位为0.7G；</li>
+<li>64位下新生代的空间为64MB，老生代为1400MB；</li>
+<li>32位下新生代的空间为16MB，老生代为700MB。</li>
+</ul>
+<h3 id="限制内存的原因"><a href="#限制内存的原因" class="headerlink" title="限制内存的原因"></a>限制内存的原因</h3><ul>
+<li>V8最初为浏览器而设计，不太可能遇到大量内存的使用场景；</li>
+<li>Javascript 在回收的时候会中断执行（如100MB 3ms时间回收），防止因为垃圾回收所导致的线程暂停执行的时间过长。</li>
+</ul>
+<h3 id="V8的回收策略"><a href="#V8的回收策略" class="headerlink" title="V8的回收策略"></a>V8的回收策略</h3><ul>
+<li>V8采用了一种分代回收的策略，将内存分为两个生代：新生代和老生代。</li>
+<li>V8分别对新生代和老生代使用不同的垃圾回收算法来提升垃圾回收的效率。</li>
+</ul>
+<h3 id="新生代垃圾回收"><a href="#新生代垃圾回收" class="headerlink" title="新生代垃圾回收"></a>新生代垃圾回收</h3><ul>
+<li><p>分配方式<br>新生代存的都是生存周期短的对象，分配内存也很容易，只保存一个指向内存空间的指针，根据分配对象的大小递增指针就可以了，当存储空间快要满时，就进行一次垃圾回收。新生代中的对象可以晋升到老生代中。</p>
+</li>
+<li><p>算法<br>新生代采用 <strong>Scavenge</strong> 垃圾回收算法，在算法实现时主要采用 <strong>Cheney</strong> 算法。</p>
+</li>
+</ul>
+<p><img src="/images/memory-management/55C1B098-9156-4141-ACDE-5291C4BA4E4A.png"><br><strong>Cheney</strong> 算法是一种采用复制的方式实现的垃圾回收算法。它将堆内存一分为二，每一部分空间称为 <strong>semispace</strong>。在这两个 <strong>semispace</strong> 空间中，只有一个处于使用中，另一个处于闲置状态。处于使用状态的 <strong>semispace</strong> 空间称为 <strong>From</strong> 空间，处于闲置状态的空间称为 <strong>To</strong> 空间。当我们分配对象时，先是在 <strong>From</strong> 空间中进行分配。当开始进行垃圾回收时，会检查 <strong>From</strong> 空间中的存活对象。这些存活对象将被复制到 <strong>To</strong> 空间中，而非存活对象占用的空间将会被释放。完成复制后，<strong>From</strong> 空间和 <strong>To</strong> 空间的角色发生对换。 简而言之，在垃圾回收的过程中，就是通过将存活对象在两个 <strong>semispace</strong> 空间之间进行复制。</p>
+<ul>
+<li>回收示例</li>
+<li>*step1**. 在From空间中分配了3个对象A、B、C<br><img src="/images/memory-management/D42CBE85-34B8-4465-B1FB-95B221D18998.png"></li>
+</ul>
+<p><strong>step2</strong>. GC进来判断对象B没有其他引用，可以回收，对象A和C依然为活跃对象<br><img src="/images/memory-management/285AED76-EAA1-41F1-942A-A0C54CD49F8F.png"></p>
+<p><strong>step3</strong>. 将活跃对象A、C从From空间复制到To空间<br><img src="/images/memory-management/59E40B3E-9838-4850-AFDF-589708A289C2.png"></p>
+<p><strong>step4</strong>. 清空From空间的全部内存<br><img src="/images/memory-management/79F14E5E-0FEE-4396-B940-B5E9997955E1.png"></p>
+<p><strong>step5</strong>. 交换From空间和To空间<br><img src="/images/memory-management/991A4109-46A7-4EFF-BBDE-A79D7E66CB10.png"></p>
+<p><strong>step6</strong>. 在From空间中又新增了2个对象D、E<br><img src="/images/memory-management/ED9DD972-148F-403A-85BD-F5FD99BC080F.png"></p>
+<p><strong>step7</strong>. 下一轮GC进来发现对象D没有引用了，做标记<br><img src="/images/memory-management/78A1ECC6-F4AB-4822-BD33-A8A8AFBDE221.png"></p>
+<p><strong>step8</strong>. 将活跃对象A、C、E从From空间复制到To空间<br><img src="/images/memory-management/DC5928D9-DCD5-4516-8752-526B98642D15.png"></p>
+<p><strong>step9</strong>. 清空From空间全部内存<br><img src="/images/memory-management/4645D9D0-70E0-4B7C-B304-FAFA86A89C10.png"></p>
+<p><strong>step10</strong>. 继续交换From空间和To空间，开始下一轮<br><img src="/images/memory-management/15B28EC0-4F52-4C27-9418-69B632E026D2.png"></p>
+<ul>
+<li>通过上面的示例，我们可以很清楚的看到，进行From和To交换，就是为了让活跃对象始终保持在一块semispace中，另一块semispace始终保持空闲的状态。</li>
+<li>Scavenge由于只复制存活的对象，并且对于生命周期短的场景存活对象只占少部分，所以它在时间效率上有优异的体现。Scavenge的缺点是只能使用堆内存的一半，这是由划分空间和复制机制所决定的。</li>
+<li>由于Scavenge是典型的牺牲空间换取时间的算法，所以无法大规模的应用到所有的垃圾回收中。但我们可以看到， Scavenge非常适合应用在新生代中，因为新生代中对象的生命周期较短，恰恰适合这个算法。</li>
+</ul>
+<h4 id="新生代对象的晋升"><a href="#新生代对象的晋升" class="headerlink" title="新生代对象的晋升"></a>新生代对象的晋升</h4><p>当一个对象经过多次复制仍然存活时，它就会被认为是生命周期较长的对象。这种较长生命周期的对象随后会被移动到老生代中，采用新的算法进行管理。</p>
+<p><strong>对象从新生代移动到老生代的过程叫作晋升</strong>。</p>
+<p>对象晋升的条件主要有两个：</p>
+<ol>
+<li><p>对象从From空间复制到To空间时，会检查它的内存地址来判断这个对象是否已经经历过一次Scavenge回收。如果已经经历过了，会将该对象从From空间移动到老生代空间中，如果没有，则复制到To空间。<strong>总结来说，如果一个对象是第二次经历从From空间复制到To空间，那么这个对象会被移动到老生代中</strong>。</p>
+</li>
+<li><p>当要从From空间复制一个对象到To空间时，如果To空间已经使用了超过25%，则这个对象直接晋升到老生代中。设置25%这个阈值的原因是当这次Scavenge回收完成后，这个To空间会变为From空间，接下来的内存分配将在这个空间中进行。如果占比过高，会影响后续的内存分配。</p>
+</li>
+</ol>
+<h3 id="老生代垃圾回收"><a href="#老生代垃圾回收" class="headerlink" title="老生代垃圾回收"></a>老生代垃圾回收</h3><p>老生代：存放存活时间较长的对象。<br><img src="/images/memory-management/F6B90292-D07A-4331-910A-2803C6179B53.png"></p>
+<h4 id="Mark-Sweep-和-Mark-Compact"><a href="#Mark-Sweep-和-Mark-Compact" class="headerlink" title="Mark-Sweep 和 Mark-Compact"></a>Mark-Sweep 和 Mark-Compact</h4><p>V8在老生代中主要采用了<strong>Mark-Sweep</strong>（标记清除）和<strong>Mark-Compact</strong>（标记整理）相结合的方式进行垃圾回收。<br><img src="/images/memory-management/8A67607E-ED33-40E0-8D25-09F301872390.png"></p>
+<ul>
+<li><strong>Mark-Sweep</strong><br>Mark-Sweep 是标记清除的意思，它分为标记和清除两个阶段。<br>与 Scavenge 不同，Mark-Sweep 并不会将内存分为两份，所以不存在浪费一半空间的行为。Mark-Sweep 在标记阶段遍历堆内存中的所有对象，并标记活着的对象，在随后的清除阶段，只清除没有被标记的对象。<br>也就是说，Scavenge 只复制活着的对象，而 Mark-Sweep 只清除死了的对象。活对象在新生代中只占较少部分，死对象在老生代中只占较少部分，这就是两种回收方式都能高效处理的原因。</li>
+</ul>
+<p><img src="/images/memory-management/A7C34E77-593F-40FA-A708-22A0631E85B2.png"><br>可以看到，Mark-Sweep最大的问题就是，在进行一次清除回收以后，内存空间会出现不连续的状态。这种内存碎片会对后续的内存分配造成问题。<br>如果出现需要分配一个大内存的情况，由于剩余的碎片空间不足以完成此次分配，就会提前触发垃圾回收，而这次回收是不必要的。</p>
+<ul>
+<li><strong>Mark-Compact</strong><br>为了解决Mark-Sweep的内存碎片问题，Mark-Compact就被提出来了。</li>
+<li>*Mark-Compact是标记整理的意思，**是在Mark-Sweep的基础上演变而来的。Mark-Compact在标记完存活对象以后，会将活着的对象向内存空间的一端移动，移动完成后，直接清理掉边界外的所有内存。</li>
+</ul>
+<p><img src="/images/memory-management/4274F712-7332-4822-A1EC-792C66DF5678.png"></p>
+<h2 id="内存泄漏"><a href="#内存泄漏" class="headerlink" title="内存泄漏"></a>内存泄漏</h2><blockquote>
+<p>本质上讲，内存泄露就是不再被需要的内存，由于某种原因，无法被释放。  </p>
+</blockquote>
+<h3 id="内存查看"><a href="#内存查看" class="headerlink" title="内存查看"></a>内存查看</h3><ul>
+<li>浏览器 - <code>window.performance</code></li>
+<li>Node - <code>process.memoryUsage()</code></li>
+</ul>
+<h3 id="常见的内存泄露案例"><a href="#常见的内存泄露案例" class="headerlink" title="常见的内存泄露案例"></a><strong>常见的内存泄露案例</strong></h3><ul>
+<li>全局变量<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function foo(arg) &#123;</span><br><span class="line">    bar &#x3D; &quot;some text&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+在 JS 中处理未被声明的变量，上述范例中的 <code>bar</code> 时，会把 <code>bar</code> 定义到全局对象中，在浏览器中就是 <code>window</code>上。在页面中的全局变量，只有当页面被关闭后才会被销毁。所以这种写法就会造成内存泄露，当然在这个例子中泄露的只是一个简单的字符串，但是在实际的代码中，往往情况会更加糟糕。</li>
+</ul>
+<p>另外一种意外创建全局变量的情况：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function foo() &#123;</span><br><span class="line">    this.var1 &#x3D; “potential accidental global”;</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F; Foo 被调用时, this 指向全局变量(window)</span><br><span class="line">foo();</span><br></pre></td></tr></table></figure>
+<p>在这种情况下调用 <code>foo</code>，this被指向了全局变量 <code>window</code>，意外的创建了全局变量。<br>我们谈到了一些意外情况下定义的全局变量，代码中也有一些我们明确定义的全局变量。如果使用这些全局变量用来暂存大量的数据，记得在使用后，对其重新赋值为 null。</p>
+<ul>
+<li><p>未销毁的定时器和回调函数<br>在很多库中，如果使用了观察着模式，都会提供回调方法，来调用一些回调函数。要记得回收这些回调函数。举一个 setInterval的例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var serverData &#x3D; loadData();</span><br><span class="line">setInterval(function() &#123;</span><br><span class="line">    var renderer &#x3D; document.getElementById(&#39;renderer&#39;);</span><br><span class="line">    if(renderer) &#123;</span><br><span class="line">        renderer.innerHTML &#x3D; JSON.stringify(serverData);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, 5000); &#x2F;&#x2F; 每 5 秒调用一次</span><br></pre></td></tr></table></figure>
+<p>如果后续 <code>renderer</code> 元素被移除，整个定时器实际上没有任何作用。但如果你没有回收定时器，整个定时器依然有效，不但定时器无法被内存回收，定时器函数中的依赖也无法回收。在这个案例中的 <code>serverData</code> 也无法被回收。</p>
+</li>
+<li><p>闭包<br>在 JS 开发中， 我们会经常用到闭包，一个内部函数，有权访问包含其的外部函数中的变量。下面这种情况下，闭包也会造成内存泄露。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">var theThing &#x3D; null;</span><br><span class="line">var replaceThing &#x3D; function () &#123;</span><br><span class="line">  var originalThing &#x3D; theThing;</span><br><span class="line">  var unused &#x3D; function () &#123;</span><br><span class="line">    if (originalThing) &#x2F;&#x2F; 对于 ‘originalThing’的引用</span><br><span class="line">      console.log(“hi”);</span><br><span class="line">  &#125;;</span><br><span class="line">  theThing &#x3D; &#123;</span><br><span class="line">    longStr: new Array(1000000).join(‘*’),</span><br><span class="line">    someMethod: function () &#123;</span><br><span class="line">      console.log(“message”);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br><span class="line">setInterval(replaceThing, 1000);</span><br></pre></td></tr></table></figure>
+<p>这段代码，每次调用 <code>replaceThing</code> 时，<code>theThing</code> 获得了包含一个巨大的数组和一个对于新闭包 <code>someMethod</code> 的对象。同时 <code>unused</code> 是一个引用了 <code>originalThing</code> 的闭包。 这个范例的关键在于，闭包之间是共享作用域的，尽管 <code>unused</code> 可能一直没有被调用，但是 <code>someMethod</code> 可能会被调用，就会导致内存无法对其进行回收。当这段代码被反复执行时，内存会持续增长。</p>
+</li>
+<li><p>DOM 引用<br>很多时候， 我们对 Dom 的操作，会把 Dom 的引用保存在一个数组或者 Map 中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">var elements &#x3D; &#123;</span><br><span class="line">    image: document.getElementById(‘image’)</span><br><span class="line">&#125;;</span><br><span class="line">function doStuff() &#123;</span><br><span class="line">    elements.image.src &#x3D; ‘http:&#x2F;&#x2F;example.com&#x2F;image_name.png’;</span><br><span class="line">&#125;</span><br><span class="line">function removeImage() &#123;</span><br><span class="line">    document.body.removeChild(document.getElementById(‘image’));</span><br><span class="line">    &#x2F;&#x2F; 这个时候我们对于 #image 仍然有一个引用, Image 元素, 仍然无法被内存回收. </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述案例中，即使我们对于 <code>image</code> 元素进行了移除，但是仍然有对 <code>image</code> 元素的引用，依然无法对齐进行内存回收。</p>
+</li>
+</ul>
+<p>另外需要注意的一个点是，对于一个 Dom 树的叶子节点的引用。举个例子：如果我们引用了一个表格中的 <code>td</code> 元素，一旦在 Dom 中删除了整个表格，我们直观的觉得内存回收应该回收除了被引用的 <code>td</code> 外的其他元素。但是事实上，这个 <code>td</code> 元素是整个表格的一个子元素，并保留对于其父元素的引用。这就会导致对于整个表格，都无法进行内存回收。所以我们要小心处理对于 Dom 元素的引用。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><blockquote>
+<p>JS 这类高级语言，隐藏了内存管理功能。但无论开发人员是否注意，内存管理都在那，所有编程语言最终要与操作系统打交道，在内存大小固定的硬件上工作。不幸的是，即使不考虑垃圾回收对性能的影响，最新的垃圾回收算法，也无法智能回收所有极端的情况。<br>唯有程序员自己才知道何时进行垃圾回收，而 JS 由于没有暴露显示内存管理接口，导致触发垃圾回收的代码看起来像“垃圾”，或者优化垃圾回收的代码段看起来不优雅、甚至不可读。<br>所以在 JS 这类高级语言中，有必要掌握基础内存分配原理，在对内存敏感的场景，比如 nodejs 代码做严格检查与优化。谨慎使用 dom 操作、主动删除没有业务意义的变量、避免提前优化、过度优化，在保证代码可读性的前提下，利用性能监控工具，通过调用栈定位问题代码。  </p>
+</blockquote>
+<ul>
+<li>关注内存</li>
+<li>JS数据类型、JS内存机制</li>
+<li>垃圾回收</li>
+<li>V8内存机制</li>
+<li>内存泄漏</li>
+</ul>
+<p>#开发笔记/JavaScript进阶/函数</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/javascript/" rel="tag"># javascript</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/01/19/git-and-git-flow-notes/" rel="prev" title="git 和 git-flow 备忘录">
+      <i class="fa fa-chevron-left"></i> git 和 git-flow 备忘录
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/07/event-loop/" rel="next" title="浏览器的 Event Loop 机制">
+      浏览器的 Event Loop 机制 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">内存管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E7%AB%AF%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%85%B3%E6%B3%A8%E5%86%85%E5%AD%98"><span class="nav-number">1.1.</span> <span class="nav-text">前端为什么要关注内存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JS%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8EJS%E5%86%85%E5%AD%98%E6%9C%BA%E5%88%B6"><span class="nav-number">1.2.</span> <span class="nav-text">JS数据类型与JS内存机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.2.1.</span> <span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%88%E5%86%85%E5%AD%98%EF%BC%88stack%EF%BC%89"><span class="nav-number">1.2.2.</span> <span class="nav-text">栈内存（stack）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A0%86%E5%86%85%E5%AD%98%EF%BC%88heap%EF%BC%89"><span class="nav-number">1.2.3.</span> <span class="nav-text">堆内存（heap）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6GC%EF%BC%88Garbage-Collection%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">垃圾回收GC（Garbage Collection）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">1.3.1.</span> <span class="nav-text">内存的生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JavaScript%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6"><span class="nav-number">1.3.2.</span> <span class="nav-text">JavaScript的垃圾回收机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JavaScript-%E4%BD%BF%E7%94%A8%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6%E6%9D%A5%E8%87%AA%E5%8A%A8%E7%AE%A1%E7%90%86%E5%86%85%E5%AD%98%EF%BC%8C%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%98%AF%E4%B8%80%E6%8A%8A%E5%8F%8C%E5%88%83%E5%89%91%EF%BC%9A"><span class="nav-number">1.3.3.</span> <span class="nav-text">JavaScript 使用垃圾回收机制来自动管理内存，垃圾回收是一把双刃剑：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AD%96%E7%95%A5%E2%80%94%E2%80%94%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0"><span class="nav-number">1.3.4.</span> <span class="nav-text">垃圾回收策略——引用计数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AD%96%E7%95%A5%E2%80%94%E2%80%94%E6%A0%87%E8%AE%B0%E6%B8%85%E9%99%A4"><span class="nav-number">1.3.5.</span> <span class="nav-text">垃圾回收策略——标记清除</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#V8%E5%BC%95%E6%93%8E%E7%9A%84%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6"><span class="nav-number">1.4.</span> <span class="nav-text">V8引擎的内存管理机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E5%A4%A7%E5%B0%8F"><span class="nav-number">1.4.1.</span> <span class="nav-text">内存大小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%99%90%E5%88%B6%E5%86%85%E5%AD%98%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="nav-number">1.4.2.</span> <span class="nav-text">限制内存的原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#V8%E7%9A%84%E5%9B%9E%E6%94%B6%E7%AD%96%E7%95%A5"><span class="nav-number">1.4.3.</span> <span class="nav-text">V8的回收策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B0%E7%94%9F%E4%BB%A3%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6"><span class="nav-number">1.4.4.</span> <span class="nav-text">新生代垃圾回收</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B0%E7%94%9F%E4%BB%A3%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%99%8B%E5%8D%87"><span class="nav-number">1.4.4.1.</span> <span class="nav-text">新生代对象的晋升</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%80%81%E7%94%9F%E4%BB%A3%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6"><span class="nav-number">1.4.5.</span> <span class="nav-text">老生代垃圾回收</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Mark-Sweep-%E5%92%8C-Mark-Compact"><span class="nav-number">1.4.5.1.</span> <span class="nav-text">Mark-Sweep 和 Mark-Compact</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F"><span class="nav-number">1.5.</span> <span class="nav-text">内存泄漏</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E6%9F%A5%E7%9C%8B"><span class="nav-number">1.5.1.</span> <span class="nav-text">内存查看</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%E6%A1%88%E4%BE%8B"><span class="nav-number">1.5.2.</span> <span class="nav-text">常见的内存泄露案例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">1.6.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Violetta Qiao"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Violetta Qiao</p>
+  <div class="site-description" itemprop="description">至少到最后 我还有咸鱼 不腐烂的自尊</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/violetqqy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;violetqqy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:forviolet771@gmail.com" title="E-Mail → mailto:forviolet771@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">沪ICP备18000466号 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">VioletQQY</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.violetqqy.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="[译文] CSS 栅格系统（创建你自己的CSS栅格系统） 本文翻译自 Creating Your Own CSS Grid System via Jan Drewniak ，文章版权归原作者所有。  CSS栅格的概念很早就出现了，栅格的使用经常捆绑在例如Bootstrap之类的框架中。我并不讨厌Bootstrap，但是当只需要使用栅格系统的时候，使用框架会显得过于厚重。以下是经过仔细斟酌后的创建栅">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【译文】 CSS 栅格系统（创建你自己的CSS栅格系统）">
+<meta property="og:url" content="http://www.violetqqy.com/2017/06/27/css-grid-system/index.html">
+<meta property="og:site_name" content="VioletQQY的任意门">
+<meta property="og:description" content="[译文] CSS 栅格系统（创建你自己的CSS栅格系统） 本文翻译自 Creating Your Own CSS Grid System via Jan Drewniak ，文章版权归原作者所有。  CSS栅格的概念很早就出现了，栅格的使用经常捆绑在例如Bootstrap之类的框架中。我并不讨厌Bootstrap，但是当只需要使用栅格系统的时候，使用框架会显得过于厚重。以下是经过仔细斟酌后的创建栅">
+<meta property="og:locale">
+<meta property="og:image" content="http://image.violetqqy.com/2017-12-28-15144489773470.jpg-rectangle760">
+<meta property="og:image" content="http://image.violetqqy.com/2017-12-28-15144490037081.jpg-rectangle760">
+<meta property="og:image" content="http://image.violetqqy.com/2017-12-28-15144490258649.jpg-rectangle760">
+<meta property="og:image" content="http://image.violetqqy.com/2017-12-28-15144490655301.jpg-rectangle760">
+<meta property="og:image" content="http://image.violetqqy.com/2017-12-28-15144491077385.jpg-rectangle760">
+<meta property="article:published_time" content="2017-06-26T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-10T08:06:44.882Z">
+<meta property="article:author" content="Violetta Qiao">
+<meta property="article:tag" content="css">
+<meta property="article:tag" content="grid">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://image.violetqqy.com/2017-12-28-15144489773470.jpg-rectangle760">
+
+<link rel="canonical" href="http://www.violetqqy.com/2017/06/27/css-grid-system/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>【译文】 CSS 栅格系统（创建你自己的CSS栅格系统） | VioletQQY的任意门</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">VioletQQY的任意门</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://www.violetqqy.com/2017/06/27/css-grid-system/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Violetta Qiao">
+      <meta itemprop="description" content="至少到最后 我还有咸鱼 不腐烂的自尊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="VioletQQY的任意门">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【译文】 CSS 栅格系统（创建你自己的CSS栅格系统）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-06-27 00:00:00" itemprop="dateCreated datePublished" datetime="2017-06-27T00:00:00+08:00">2017-06-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/css/" itemprop="url" rel="index"><span itemprop="name">css</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="译文-CSS-栅格系统（创建你自己的CSS栅格系统）"><a href="#译文-CSS-栅格系统（创建你自己的CSS栅格系统）" class="headerlink" title="[译文] CSS 栅格系统（创建你自己的CSS栅格系统）"></a>[译文] CSS 栅格系统（创建你自己的CSS栅格系统）</h1><blockquote>
+<p>本文翻译自 <a target="_blank" rel="noopener" href="http://j4n.co/blog/Creating-your-own-css-grid-system">Creating Your Own CSS Grid System</a> via Jan Drewniak ，文章版权归原作者所有。</p>
+</blockquote>
+<p>CSS栅格的概念很早就出现了，栅格的使用经常捆绑在例如Bootstrap之类的框架中。我并不讨厌Bootstrap，但是当只需要使用栅格系统的时候，使用框架会显得过于厚重。以下是经过仔细斟酌后的创建栅格系统的方法。</p>
+<h2 id="创建CSS栅格系统的元素"><a href="#创建CSS栅格系统的元素" class="headerlink" title="创建CSS栅格系统的元素"></a>创建CSS栅格系统的元素</h2><p><img src="http://image.violetqqy.com/2017-12-28-15144489773470.jpg-rectangle760"></p>
+<p>正如上图所示，基本的栅格系统址包含几个元素：</p>
+<ul>
+<li>一个容器（a container)</li>
+<li>行（rows)</li>
+<li>列（columns）</li>
+<li>间隙（gutters - 列之间的空隙）</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="容器（The-Container）"><a href="#容器（The-Container）" class="headerlink" title="容器（The Container）"></a>容器（The Container）</h2><p><img src="http://image.violetqqy.com/2017-12-28-15144490037081.jpg-rectangle760"></p>
+<p>创建容器的目的是为了设置整个栅格的宽度。容器的宽度通常都会设置为100%，但是为了在很大的屏幕上显示良好，你最好设置一个<code>max-width</code>。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.grid-container</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">max-width</span>: <span class="number">1200px</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="行（The-Row）"><a href="#行（The-Row）" class="headerlink" title="行（The Row）"></a>行（The Row）</h2><p><img src="http://image.violetqqy.com/2017-12-28-15144490258649.jpg-rectangle760"></p>
+<p>创建行元素的目的是为了当元素溢出的时候使列始终包含在行元素中。为了达到这个目的，我们使用__clearfix__的方法确保行元素里的所有元素都在该行元素内。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*-- our cleafix hack -- */</span> </span><br><span class="line"><span class="selector-class">.row</span><span class="selector-pseudo">:before</span>, </span><br><span class="line"><span class="selector-class">.row</span><span class="selector-pseudo">:after</span> &#123;</span><br><span class="line">  <span class="attribute">content</span>: <span class="string">&quot;&quot;</span>;</span><br><span class="line">  <span class="attribute">display</span>: table;</span><br><span class="line">  <span class="attribute">clear</span>: both;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="列（The-Column）"><a href="#列（The-Column）" class="headerlink" title="列（The Column）"></a>列（The Column）</h2><p><img src="http://image.violetqqy.com/2017-12-28-15144490655301.jpg-rectangle760"></p>
+<p>列无疑是栅格系统中最复杂的部分。首先，在CSS中有几种不同的方式可以定位列。其次，需要考虑不同宽度的列，特别是配合响应式设计的因素。在这一小节中，我们首先定位列元素以及给予它宽度，暂时不考虑响应式设计。</p>
+<h3 id="列的定位"><a href="#列的定位" class="headerlink" title="列的定位"></a>列的定位</h3><p><code>float</code>、<code>inline-block</code>、<code>display-table</code>、<code>display-flex</code>这些在CSS中都是不同的定位方式。从我个人的经历来看，最不易出错和最广泛使用的定位方式是<code>float</code>方式。然而如果我们的列是空的，使用浮动定位的列会叠在空列上面。为了避免这种情况，我们会给我们的列一个最小高度为1px，使列能正常浮动。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-attr">[class*=<span class="string">&#x27;col-&#x27;</span>]</span> &#123;</span><br><span class="line">  <span class="attribute">float</span>: left;</span><br><span class="line">  <span class="attribute">min-height</span>: <span class="number">1px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="列的宽度"><a href="#列的宽度" class="headerlink" title="列的宽度"></a>列的宽度</h3><p>为了找到列的宽度，我们只需要将整个容器的宽度按照一定的规则进行分割。在我们的案例中，容器的宽度是100%，然后我们将它分成六列，这样每一列的宽度就是100/6 = 16.66，所以我们的基本宽度是16.66%。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-attr">[class*=<span class="string">&#x27;col-&#x27;</span>]</span> &#123;</span><br><span class="line">  <span class="attribute">float</span>: left;</span><br><span class="line">  <span class="attribute">min-height</span>: <span class="number">1px</span>; </span><br><span class="line">  <span class="attribute">width</span>: <span class="number">16.66%</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>到这里还只是个开始，如果我们希望一部分是两列宽的，我们需要创建一个两列的宽度。整个计算很简单。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.col-1</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">16.66%</span>; </span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.col-2</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">33.33%</span>; </span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.col-3</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">50%</span>; </span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.col-4</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">66.664%</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.col-5</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">83.33%</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.col-6</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在使用时，我们唯一需要考虑的是在组合使用列的时候，保证每一行里列数的总和不超过6（也就是列的宽度总和必须小于100%）。</p>
+<h3 id="列的间隙"><a href="#列的间隙" class="headerlink" title="列的间隙"></a>列的间隙</h3><p><img src="http://image.violetqqy.com/2017-12-28-15144491077385.jpg-rectangle760"></p>
+<p>在使用<code>border-box</code>盒模型之前，给每一列设置 padding 是一件很痛苦的事情。幸运的是，在<code>border-box</code>盒模型之下我们可以很容易的设置列之间的间隙。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*-- setting border box on all elements inside the grid --*/</span></span><br><span class="line"><span class="selector-class">.grid-container</span> * &#123;</span><br><span class="line">  <span class="attribute">box-sizing</span>: border-box; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-attr">[class*=<span class="string">&#x27;col-&#x27;</span>]</span> &#123;</span><br><span class="line">  <span class="attribute">float</span>: left;</span><br><span class="line">  <span class="attribute">min-height</span>: <span class="number">1px</span>; </span><br><span class="line">  <span class="attribute">width</span>: <span class="number">16.66%</span>; </span><br><span class="line">  <span class="comment">/*-- our gutter --*/</span></span><br><span class="line">  <span class="attribute">padding</span>: <span class="number">12px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>（个人建议，我通常会在css里设置 <code>* &#123;box-sizing: border-box;&#125;</code>，来使整个页面都是用<code>border-box</code>的盒模型来渲染。）</p>
+<ul>
+<li>我们基本的栅格已经完成：</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;grid-container outline&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;row&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-1&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-1<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-1&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-1<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-1&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-1<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-1&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-1<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-1&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-1<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-1&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-1<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;row&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-2&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-2<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-2&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-2<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-2&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-2<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;row&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-3&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-3<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-3&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-3<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>完整的 CSS 来创建以上栅格系统：</li>
+<li>CSS</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">* &#123;</span><br><span class="line">  <span class="attribute">box-sizing</span>: border-box;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.grid-container</span> &#123;</span><br><span class="line">  <span class="attribute">margin</span>: <span class="number">0</span> auto;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>; </span><br><span class="line">  <span class="attribute">max-width</span>: <span class="number">1200px</span>;      </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*-- our cleafix hack -- */</span> </span><br><span class="line"><span class="selector-class">.row</span><span class="selector-pseudo">:before</span>, </span><br><span class="line"><span class="selector-class">.row</span><span class="selector-pseudo">:after</span> &#123;</span><br><span class="line">  <span class="attribute">content</span>: <span class="string">&quot;&quot;</span>;</span><br><span class="line">  <span class="attribute">display</span>: table;</span><br><span class="line">  <span class="attribute">clear</span>:both;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-attr">[class*=<span class="string">&#x27;col-&#x27;</span>]</span> &#123;</span><br><span class="line">  <span class="attribute">float</span>: left; </span><br><span class="line">  <span class="attribute">min-height</span>: <span class="number">1px</span>; </span><br><span class="line">  <span class="attribute">width</span>: <span class="number">16.66%</span>; </span><br><span class="line">  <span class="comment">/*-- our gutter -- */</span></span><br><span class="line">  <span class="attribute">padding</span>: <span class="number">12px</span>; </span><br><span class="line">  <span class="attribute">background-color</span>: <span class="number">#FFDCDC</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.col-1</span> &#123; <span class="attribute">width</span>: <span class="number">16.66%</span>;  &#125;</span><br><span class="line"><span class="selector-class">.col-2</span> &#123; <span class="attribute">width</span>: <span class="number">33.33%</span>;  &#125;</span><br><span class="line"><span class="selector-class">.col-3</span> &#123; <span class="attribute">width</span>: <span class="number">50%</span>;     &#125;</span><br><span class="line"><span class="selector-class">.col-4</span> &#123; <span class="attribute">width</span>: <span class="number">66.66%</span>;  &#125;</span><br><span class="line"><span class="selector-class">.col-5</span> &#123; <span class="attribute">width</span>: <span class="number">83.33%</span>;  &#125;</span><br><span class="line"><span class="selector-class">.col-6</span> &#123; <span class="attribute">width</span>: <span class="number">100%</span>;    &#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.outline</span>, <span class="selector-class">.outline</span> * &#123;</span><br><span class="line">  <span class="attribute">outline</span>: <span class="number">1px</span> solid <span class="number">#F6A1A1</span>; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*-- some extra column content styling --*/</span></span><br><span class="line"><span class="selector-attr">[class*=<span class="string">&#x27;col-&#x27;</span>]</span> &gt; <span class="selector-tag">p</span> &#123;</span><br><span class="line">  <span class="attribute">background-color</span>: <span class="number">#FFC2C2</span>; </span><br><span class="line">  <span class="attribute">padding</span>: <span class="number">0</span>;</span><br><span class="line">  <span class="attribute">margin</span>: <span class="number">0</span>;</span><br><span class="line">  <span class="attribute">text-align</span>: center; </span><br><span class="line">  <span class="attribute">color</span>: white; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="第二部分：响应式设计的栅格系统"><a href="#第二部分：响应式设计的栅格系统" class="headerlink" title="第二部分：响应式设计的栅格系统"></a>第二部分：响应式设计的栅格系统</h2><p>调整我们的栅格系统以适应手机布局是非常简单的，我们所需要做的就是调整列的宽度。</p>
+<p>为了清楚起见，在布局小于800px时，我将列的宽度设置为原来的两倍。</p>
+<p>唯一需要注意的是，在最后一列的宽度设置上存在一些例外。比如当宽度为<code>.col-2</code>的列和宽度为<code>.col-1</code>的列在宽度为<code>.col-5</code>的列旁边的时候。</p>
+<p>为了解决这个问题，我们将每一行的最后一个宽度为<code>.col-2</code>的元素和<code>.col-1</code>的元素设置为 100% 的宽度。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@media</span> all <span class="keyword">and</span> (<span class="attribute">max-width:</span><span class="number">800px</span>) &#123;</span><br><span class="line">  <span class="selector-class">.col-1</span> &#123; <span class="attribute">width</span>: <span class="number">33.33%</span>;  &#125;</span><br><span class="line">  <span class="selector-class">.col-2</span> &#123; <span class="attribute">width</span>: <span class="number">50%</span>;     &#125;</span><br><span class="line">  <span class="selector-class">.col-3</span> &#123; <span class="attribute">width</span>: <span class="number">83.33%</span>;  &#125;</span><br><span class="line">  <span class="selector-class">.col-4</span> &#123; <span class="attribute">width</span>: <span class="number">100%</span>;    &#125;</span><br><span class="line">  <span class="selector-class">.col-5</span> &#123; <span class="attribute">width</span>: <span class="number">100%</span>;    &#125;</span><br><span class="line">  <span class="selector-class">.col-6</span> &#123; <span class="attribute">width</span>: <span class="number">100%</span>;    &#125;</span><br><span class="line"></span><br><span class="line">  <span class="selector-class">.row</span> <span class="selector-class">.col-2</span><span class="selector-pseudo">:last-of-type</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100%</span>; </span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="selector-class">.row</span> <span class="selector-class">.col-5</span> ~ <span class="selector-class">.col-1</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100%</span>; </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这一切就是这样的。我们现在就可以在不使用任何框架的情况下创建我们自己的响应式栅格系统。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;grid-container outline&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;row&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-1&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-1<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-1&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-1<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-1&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-1<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-1&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-1<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-1&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-1<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-1&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-1<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;row&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-2&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-2<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-2&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-2<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-2&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-2<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;row&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-3&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-3<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-3&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-3<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;row&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-4&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-4<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-2&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-2<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;row&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-5&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-5<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-1&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-1<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;row&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-6&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">p</span>&gt;</span>col-6<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>值得注意的是，本指南仅仅只是创建栅格系统的起点。这不是一个框架，甚至也不是一个完整的解决方案，但我希望这会在你创建CSS栅格系统的过程中起到通俗易懂的作用。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/css/" rel="tag"># css</a>
+              <a href="/tags/grid/" rel="tag"># grid</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/06/21/an-adavnced-guide-to-html-and-css/" rel="prev" title="【转载】 An Adavnced Guide to HTML &amp; CSS （译文）">
+      <i class="fa fa-chevron-left"></i> 【转载】 An Adavnced Guide to HTML &amp; CSS （译文）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/09/22/text-overflow/" rel="next" title="文本溢出解决方案">
+      文本溢出解决方案 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%91%E6%96%87-CSS-%E6%A0%85%E6%A0%BC%E7%B3%BB%E7%BB%9F%EF%BC%88%E5%88%9B%E5%BB%BA%E4%BD%A0%E8%87%AA%E5%B7%B1%E7%9A%84CSS%E6%A0%85%E6%A0%BC%E7%B3%BB%E7%BB%9F%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">[译文] CSS 栅格系统（创建你自己的CSS栅格系统）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BACSS%E6%A0%85%E6%A0%BC%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%85%83%E7%B4%A0"><span class="nav-number">1.1.</span> <span class="nav-text">创建CSS栅格系统的元素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%EF%BC%88The-Container%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">容器（The Container）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%8C%EF%BC%88The-Row%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">行（The Row）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%97%EF%BC%88The-Column%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">列（The Column）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%97%E7%9A%84%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.4.1.</span> <span class="nav-text">列的定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%97%E7%9A%84%E5%AE%BD%E5%BA%A6"><span class="nav-number">1.4.2.</span> <span class="nav-text">列的宽度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%97%E7%9A%84%E9%97%B4%E9%9A%99"><span class="nav-number">1.4.3.</span> <span class="nav-text">列的间隙</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86%EF%BC%9A%E5%93%8D%E5%BA%94%E5%BC%8F%E8%AE%BE%E8%AE%A1%E7%9A%84%E6%A0%85%E6%A0%BC%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.5.</span> <span class="nav-text">第二部分：响应式设计的栅格系统</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Violetta Qiao"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Violetta Qiao</p>
+  <div class="site-description" itemprop="description">至少到最后 我还有咸鱼 不腐烂的自尊</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/violetqqy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;violetqqy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:forviolet771@gmail.com" title="E-Mail → mailto:forviolet771@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">沪ICP备18000466号 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">VioletQQY</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
